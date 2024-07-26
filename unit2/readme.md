@@ -1,5 +1,14 @@
 # Unit 2
 
+## Setup
+
+```bash
+cd unit2
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
 ## Notes
 
 ### What are tensors?
@@ -95,3 +104,7 @@ t2 = t.T
 
 t.matmul(t2)
 ```
+
+Other resources:
+- [Notebooks](https://github.com/Lightning-AI/dl-fundamentals/blob/main/unit02-pytorch-tensors/2.4-linalg/2.4-linalg-part1.ipynb) on linear algebra in pytorch
+- [Pdb debugger](https://docs.python.org/3/library/pdb.html)
