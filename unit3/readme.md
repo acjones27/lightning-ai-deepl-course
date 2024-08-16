@@ -128,7 +128,7 @@ We also have access to `torch.nn.sigmoid` for our activation function and of cou
 
 #### Logistic Regression
 
-We can replace our Perceptron model from the previous units with the following code (see the [notebook](./logreg-part1.ipynb) as well)
+We can replace our Perceptron model from the previous units with the following code (see the [notebook](./logreg.ipynb) as well)
 
 ```python
 class LogisticRegression(torch.nn.Module):
@@ -158,6 +158,8 @@ x = torch.tensor([1.1, 2.1])
 with torch.inference_mode():
     proba = model(x)
 ```
+
+See the [notebook](./logreg.ipynb) for information on defining a dataset, dataloader, and running an entire training loop with SGD optimizer and accuracy measure.
 
 ### Other resources:
 
