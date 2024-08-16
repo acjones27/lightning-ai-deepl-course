@@ -8,12 +8,7 @@ This [unit](https://lightning.ai/courses/deep-learning-fundamentals/unit-1/) cov
 
 ## Setup
 
-```bash
-cd unit1
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
+See setup from [main readme](../README.md#setup) for creating the virtualenv and installing packages
 
 ## Code
 
