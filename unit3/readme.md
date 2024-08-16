@@ -161,6 +161,21 @@ with torch.inference_mode():
 
 See the [notebook](./logreg.ipynb) for information on defining a dataset, dataloader, and running an entire training loop with SGD optimizer and accuracy measure.
 
+#### Normalization
+
+In the [notebook](./logreg.ipynb), we see a standardization step like `(x - mean)/std`. This is important because
+- We can find a better learning rate that works for all features
+- We have numerically stable gradients
+- Our model converges faster (so we need fewer epochs -> faster training)
+
+Common nomalization techniques
+- 0-1 or min-max normalization: `(x - min)/(max - min)`
+- z-score standardization: `(x - mean)/std`
+
+Of course, we should always use the min/max/mean/std from the training set to normalize our validation/test sets.
+
+For NNs, standardization is usually prefered because of the 0-centering which makes gradient descent better (although differences are small)
+
 ### Other resources:
 
 - [Blog on negative log-likelihood](https://sebastianraschka.com/blog/2022/losses-learned-part1.html)
