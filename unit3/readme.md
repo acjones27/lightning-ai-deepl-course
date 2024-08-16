@@ -2,12 +2,7 @@
 
 ## Setup
 
-```bash
-cd unit2
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
+See setup from [main readme](../README.md#setup) for creating the virtualenv and installing packages
 
 ## Notes
 
@@ -60,7 +55,108 @@ from torch.autograd import grad
 # retain graph so we can do the bias
 grad_L_w1 = grad(l, w_1, retain_graph=True)
 
-grad_L_b = grad(l, b)
+grad_L_b = grad(l, b, retain_graph=True)
+```
+
+Better practice is to call backward and get the grads in one step
+```python
+l.backward()
+
+grad_L_w1 = w_1.grad
+
+grad_L_b = b.grad
+```
+### Proper Pytorch API example
+
+All of the above is just showing how we can do this manually, but in reality we would never code a NN from scratch like this. Let's start using the "real" torch API
+
+#### Rough example
+
+```python
+import torch
+
+class MyClassifier(torch.nn.Module):
+    def __init__(self):
+        # Define our model params here
+    
+    def forward(self):
+        # Define the model to calculate outputs from inputs
+        return outputs
+```
+
+By inheriting from `nn.Module` we get the `backward` method and the `step` method for calculating the gradients and updating model weights, respectively
+
+We can then use our model like
+
+```python
+
+model = MyClassifier()
+optimizer = torch.optim.SGD(...)
+
+for epoch in range(num_epochs):
+    for x, y in train_dataloader():
+        # forward pass
+        outputs = model(x)
+        loss = loss_fn(outputs, y)
+
+        # reset gradients so that we don't end up with a cumulative sum
+        optimizer.zero_grad()
+
+        # calculate gradients for weights and bias
+        loss.backward()
+
+        # update weights and bias
+        optimizer.step()
+```
+
+For logistic regression, we can directly use the `torch.nn.Linear` layer for our model
+
+```python
+# set a random number seed because our weights and bias will be initialised to random numbers
+torch.manual.seed(123)
+
+linear = torch.nn.Linear(in_features=2, out_features=1)
+
+print(linear.weight)
+print(linear.bias)
+
+# This works for single examples and minibatches
+z = linear(x)
+```
+
+We also have access to `torch.nn.sigmoid` for our activation function and of course `torch.nn.functional.binary_cross_entropy` for our loss function as we saw previously
+
+#### Logistic Regression
+
+We can replace our Perceptron model from the previous units with the following code (see the [notebook](./logreg-part1.ipynb) as well)
+
+```python
+class LogisticRegression(torch.nn.Module):
+
+    def __init__(self, num_features):
+        super().__init__()
+        # Linear layer, using num_features inputs and 1 output
+        self.linear = torch.nn.Linear(num_features, 1)
+
+    def forward(self, x):
+        # compute logits i.e. weighted sum of inputs
+        logits = self.linear(x)
+
+        # apply sigmoid activation function
+        # We don't need to do this, we can work directly with the logits as we saw above with binary_cross_entropy_with_logits
+        probas = torch.sigmoid(logits)
+        return probas
+```
+
+Now to run an example through it 
+
+```python
+torch.manual_seed(1)
+model = LogisticRegression(num_features=2)
+x = torch.tensor([1.1, 2.1])
+# NOTE: this can be used in newer versions of pytorch instead of torch.no_grad()
+with torch.inference_mode():
+    proba = model(x)
 ```
 
 ### Other resources:
